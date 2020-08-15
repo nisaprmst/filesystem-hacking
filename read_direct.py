@@ -10,26 +10,32 @@ def read_test(filename, block_size, file_size):
         Returns a list of read times in sec of each block.
         '''
 	f = os.open(filename, os.O_RDONLY | os.O_DIRECT, 0o777)  # low-level I/O
-    # generate random read positions
-	offsets = list(range(0, file_size, block_size))
-	# print(offsets)
-	shuffle(offsets)
+	fo = os.fdopen(f, 'rb', 0)
 	took = []
-	for i, offset in enumerate(offsets, 1):
-		m = mmap.mmap(-1, block_size) # read the whole file
+	print(os.stat('/hdd/file.txt'))
+	for i in range(100):
+		readbuf = mmap.mmap(-1, 4096*2) # read the whole file
+		#os.lseek(f, 0, os.SEEK_SET)
+		
 		start = time()
-		os.lseek(f, offset, os.SEEK_SET)  # set position
-		m.read(f)  # read from position
+		p = fo.readinto(readbuf)  # read from position
 		t = time() - start
-		took.append(t)
-	os.close(f)
+		#print(readbuf.size())
+		#print(readbuf.readline())
+		print(p)
+		speed = (4096*2/t) / 1000000
+		#print(t)
+		took.append(speed)
+		readbuf.close()
+	fo.close()
 	return took
 
 block_size = 4096
-file_size = 1048576
+file_size = 1024 * 1024
 filename = "/hdd/file.txt"
 
 took = read_test(filename, block_size, file_size)
-print(took)
-time_spent = sum(took)
-print("reading throughput :", 1/time_spent, "MB/s")
+#print(took)
+avg_speed = sum(took) / len(took)
+
+print("reading throughput :", avg_speed, "MB/s")

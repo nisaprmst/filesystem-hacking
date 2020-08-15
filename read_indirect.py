@@ -2,6 +2,9 @@ import os, sys
 import mmap
 from random import shuffle
 from time import time
+from streamlit import caching
+
+
 def read_test(filename, block_size, file_size):
 	'''
         Performs read speed test by reading random offset blocks from
@@ -16,12 +19,14 @@ def read_test(filename, block_size, file_size):
 	shuffle(offsets)
 	took = []
 	for i, offset in enumerate(offsets, 1):
+		#caching.clear_cache()
 		start = time()
 		os.lseek(f, offset, os.SEEK_SET)  # set position
 		buff= os.read(f, block_size)  # read from position
 		t = time() - start
 		if not buff: break  # if EOF reached
-		took.append(t)
+		speed = (block_size/t)/1000000
+		took.append(speed)
 	os.close(f)
 	return took
 
@@ -31,5 +36,6 @@ filename = "/hdd/file.txt"
 
 took = read_test(filename, block_size, file_size)
 #print(took)
-time_spent = sum(took)
-print("reading throughput :", 1/time_spent, "MB/s")
+print("jumlah: ", len(took))
+avg_speed = sum(took)/len(took)
+print("reading throughput :", avg_speed, "MB/s")
