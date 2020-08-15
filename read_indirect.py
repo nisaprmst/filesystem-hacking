@@ -6,12 +6,7 @@ from streamlit import caching
 
 
 def read_test(filename, block_size, file_size):
-	'''
-        Performs read speed test by reading random offset blocks from
-        file, at maximum of blocks_count, each at size of block_size
-        bytes until the End Of File reached.
-        Returns a list of read times in sec of each block.
-        '''
+
 	f = os.open(filename, os.O_RDONLY, 0o777)  # low-level I/O
     # generate random read positions
 	offsets = list(range(0, file_size, block_size))

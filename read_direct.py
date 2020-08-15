@@ -3,12 +3,6 @@ import mmap
 from random import shuffle
 from time import time
 def read_test(filename, block_size, file_size):
-	'''
-        Performs read speed test by reading random offset blocks from
-        file, at maximum of blocks_count, each at size of block_size
-        bytes until the End Of File reached.
-        Returns a list of read times in sec of each block.
-        '''
 	f = os.open(filename, os.O_RDONLY | os.O_DIRECT, 0o777)  # low-level I/O
 	fo = os.fdopen(f, 'rb', 0)
 	took = []
