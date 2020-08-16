@@ -3,6 +3,8 @@ import mmap
 from random import shuffle
 from time import time
 from streamlit import caching
+import numpy as np
+#import PyGnuplot as pg
 
 
 def read_test(filename, block_size, file_size):
